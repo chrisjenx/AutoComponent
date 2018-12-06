@@ -1,7 +1,7 @@
 ## AutoComponent
 
 
-Add `@Injecton` annotations to the classes you want the component to inject
+Add `@Injection` annotations to the classes you want the component to inject
 
 ```kotlin
 @Injection
