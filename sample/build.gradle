@@ -24,7 +24,7 @@ idea {
 }
 
 dependencies {
-    compile project(':autocomponent-annotation')
+    compileOnly project(':autocomponent-annotation')
     compile project(':autocomponent-helpers')
     compile deps.kotlin.stdlibjdk8
     compile deps.misc.dagger
