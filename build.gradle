@@ -1,0 +1,20 @@
+subprojects {
+    apply from: rootProject.file('gradle/dependencies.gradle')
+    buildscript {
+        repositories {
+            jcenter()
+            mavenCentral()
+        }
+        dependencies {
+            classpath deps.build.gradlePlugins.kotlin
+            classpath deps.build.gradlePlugins.dokka
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://kotlin.bintray.com/kotlinx/" }
+    }
+}
+
+apply from: 'gradle/dependencies.gradle'

@@ -1,0 +1,46 @@
+def versions = [
+        dokka : '0.9.17',
+        kotlin: '1.3.10',
+        dagger: '2.19'
+]
+
+def apt = [
+        autoService: "com.google.auto.service:auto-service:1.0-rc4",
+        autoCommon : 'com.google.auto:auto-common:0.10'
+]
+
+def build = [
+        ci           : 'true' == System.getenv('CI'),
+        gradlePlugins: [
+                dokka : "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
+                kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        ]
+]
+
+def kotlin = [
+        reflect   : "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}",
+        stdlib    : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+        stdlibjdk7: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
+        stdlibjdk8: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+]
+
+def misc = [
+        dagger         : "com.google.dagger:dagger:${versions.dagger}",
+        daggerCompiler : "com.google.dagger:dagger-compiler:${versions.dagger}",
+        kotlinxMetadata: 'org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.0.4',
+        javapoet       : 'com.squareup:javapoet:1.11.1'
+]
+
+def test = [
+        junit: 'junit:junit:4.12',
+        truth: 'com.google.truth:truth:0.41'
+]
+
+ext.deps = [
+        "apt"     : apt,
+        "build"   : build,
+        "kotlin"  : kotlin,
+        "misc"    : misc,
+        "test"    : test,
+        "versions": versions
+]

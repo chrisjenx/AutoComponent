@@ -1,0 +1,52 @@
+buildscript {
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${deps.versions.kotlin}"
+    }
+}
+
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.jetbrains.kotlin.kapt'
+apply plugin: 'idea'
+
+idea {
+    module {
+        sourceDirs += files(
+                'build/generated/source/kapt/main',
+                'build/generated/source/kaptKotlin/main',
+                'build/tmp/kapt/main/kotlinGenerated'
+        )
+        generatedSourceDirs += files(
+                'build/generated/source/kapt/main',
+                'build/generated/source/kaptKotlin/main',
+                'build/tmp/kapt/main/kotlinGenerated'
+        )
+    }
+}
+
+dependencies {
+    compile project(':autocomponent-annotation')
+    compile project(':autocomponent-helpers')
+    compile deps.kotlin.stdlibjdk8
+    compile deps.misc.dagger
+
+    kapt project(':autocomponent-processor')
+    kapt deps.misc.daggerCompiler
+
+    kaptTest project(':autocomponent-processor')
+    testCompile deps.test.junit
+    testCompile deps.test.truth
+}
+
+kapt {
+    arguments {
+        arg("autocomponent.generated", "javax.annotation.Generated")
+    }
+    correctErrorTypes = true
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = ['-Xjsr305=strict', '-progressive']
+    }
+}
