@@ -1,7 +1,8 @@
 def versions = [
-        dokka : '0.9.17',
-        kotlin: '1.3.10',
-        dagger: '2.19'
+        dokka  : '0.9.17',
+        kotlin : '1.3.10',
+        dagger : '2.19',
+        bintray: '0.9'
 ]
 
 def apt = [
@@ -12,8 +13,9 @@ def apt = [
 def build = [
         ci           : 'true' == System.getenv('CI'),
         gradlePlugins: [
-                dokka : "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
-                kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+                dokka  : "org.jetbrains.dokka:dokka-gradle-plugin:${versions.dokka}",
+                kotlin : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
+                bintray: "com.novoda:bintray-release:${versions.bintray}"
         ]
 ]
 

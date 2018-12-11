@@ -13,3 +13,5 @@ compileKotlin {
         freeCompilerArgs = ['-Xjsr305=strict', '-progressive']
     }
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
