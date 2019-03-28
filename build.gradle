@@ -4,6 +4,7 @@ subprojects {
         repositories {
             jcenter()
             mavenCentral()
+            maven { url 'https://dl.bintray.com/kotlin/dokka' }
         }
         dependencies {
             classpath deps.build.gradlePlugins.kotlin
@@ -15,6 +16,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "https://kotlin.bintray.com/kotlinx/" }
+        maven { url 'https://dl.bintray.com/kotlin/dokka' }
     }
 }
 

@@ -11,7 +11,7 @@ public class InjectJava {
 
   @Inject
   public InjectJava() {
-    AutoInjector.inject(getDagger(), this, this.getClass());
+    AutoInjector.inject(this, getDagger());
   }
 
 }

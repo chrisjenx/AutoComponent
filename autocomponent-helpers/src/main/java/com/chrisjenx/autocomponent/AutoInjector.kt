@@ -1,4 +1,5 @@
 @file:JvmName("AutoInjector")
+
 package com.chrisjenx.autocomponent
 
 import java.lang.reflect.Method
@@ -32,8 +33,25 @@ internal fun <T> findInject(autoComponent: Any, injectClazz: Class<T>): Method? 
             // Add our shortcut :)
             injectMap[injectClazz] = it
         }
-        .also {
-            if (it == null) logger("Failed to find [inject(${injectClazz.simpleName})], did you remember to add [@Injector] to the class?")
+        .let {
+            if (it != null) return@let it
+            val superClass = injectClazz.superclass
+            val interfaces = injectClazz.interfaces
+            return@let when {
+                superClass != null && superClass != Any::class.java -> findInject(autoComponent, superClass)
+                interfaces != null -> {
+                    var findInterface: Method? = null
+                    for (i in interfaces) {
+                        findInterface = findInject(autoComponent, i)
+                        if(findInterface != null) break
+                    }
+                    findInterface
+                }
+                else -> {
+                    logger("Failed to find [inject(${injectClazz.simpleName})], did you remember to add [@Injector] to the class?")
+                    null
+                }
+            }
         }
 }
 
@@ -64,7 +82,7 @@ internal fun <T> findInject(autoComponent: Any, injectClazz: Class<T>): Method? 
  * @Injection
  * class MyClass {
  *  init {
- *   inject(getAppComponent(), this, this::class.java)
+ *   inject(getAppComponent(), this)
  *  }
  * }
  * ```
@@ -73,10 +91,11 @@ internal fun <T> findInject(autoComponent: Any, injectClazz: Class<T>): Method? 
  * @param inject this is the class you are injecting into
  * @param injectClazz this is the class definition for [inject]
  */
-fun <T> inject(rootComponent: Any, inject: T, injectClazz: Class<out T>) {
+//fun <T> inject(rootComponent: Any, inject: T, injectClazz: Class<out T>) {
+fun <T : Any> T.inject(rootComponent: Any) {
     findAutoComponent(rootComponent)
-        ?.let { autoComponent -> findInject(autoComponent, injectClazz) }
-        ?.let { injectMethod -> injectMethod.invoke(autoComponent, inject) }
+        ?.let { autoComponent -> findInject(autoComponent, this.javaClass) }
+        ?.let { injectMethod -> injectMethod.invoke(autoComponent, this) }
 }
 
 /**
@@ -86,6 +105,6 @@ fun <T> inject(rootComponent: Any, inject: T, injectClazz: Class<out T>) {
  * @param T this is what we are going to try and inject into
  * @see inject
  */
-inline fun <reified T> T.inject(rootComponent: Any) {
-    inject(rootComponent, this, T::class.java)
-}
+//inline fun <T : Any> T.inject(rootComponent: Any) {
+//    inject(rootComponent, this)
+//}
