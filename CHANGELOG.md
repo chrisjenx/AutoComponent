@@ -1,5 +1,7 @@
 # Change Log
 
+## 0.4.0-SNAPSHOT (2019/03/28)
+- Add ignore to `@Injection(ignore = true)`. 
 
 ## 0.3.0-SNAPSHOT (2019/03/27)
 - Updated to Kotlin 1.3.21

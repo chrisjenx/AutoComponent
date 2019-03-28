@@ -9,6 +9,20 @@ class MyClass {}
 
 ```
 
+You may annotate super classes with `@Injection` and all subclasses will be processed too.
+
+In some cases you may want to ignore/skip a subclass as you don't do any injection or want to create a `@Subcomponent` 
+etc. In those cases you can use the `ignore` property on the annotation (defaults to `false`), this will tell the 
+annotation processor to not create an `inject(T)` for this subclass. 
+
+Warning: any subclass of `@Injection(ignore=true)` will be ignored too. You will need to annotate subclasses with 
+`@Injection()` to re-include those.  
+
+```kotlin
+@Injection(ignore = true)
+class IgnoreSubclass : MyClass 
+```
+
 
 Expose the [AutoComponent] SubComponent via your root component.
 
@@ -25,7 +39,7 @@ Use the optional `AutoInjector.inject`s methods if you want.
 Kotlin:
 
 ```kotlin
-
+@Injection
 class MyClass {
   init {
     inject(getAppComponent())
@@ -37,11 +51,11 @@ class MyClass {
 Java:
 
 ```java
+@Injection
+public class MyJavaClass {
 
-public MyJavaClass {
-
-  public MyJavaClass {
-    AutoInjector.inject(getAppComponent(), this, this.getClass())
+  public MyJavaClass() {
+    AutoInjector.inject(this, getAppComponent());
   }
 
 }
@@ -76,10 +90,10 @@ In your build.gradle
 dependencies {
 
   // Optional - the helper classes, only need this if you want to use reflection.
-  compileOnly "com.chrisjenx.autocomponent:autocomponent-helpers:0.1.0-SNAPSHOT"
+  compileOnly "com.chrisjenx.autocomponent:autocomponent-helpers:0.4.0-SNAPSHOT"
 
   // Required - for kapt to work, can be compile, but we don't need them after kapt has run.
-  compileOnly "com.chrisjenx.autocomponent:autocomponent-annotation:0.1.0-SNAPSHOT"
+  compileOnly "com.chrisjenx.autocomponent:autocomponent-annotation:0.4.0-SNAPSHOT"
 
   // Required - generate the AutoComponent
   kapt "com.chrisjenx.autocomponent:autocomponent-processor:0.1.0-SNAPSHOT"

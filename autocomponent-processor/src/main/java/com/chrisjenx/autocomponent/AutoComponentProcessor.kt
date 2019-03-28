@@ -53,16 +53,19 @@ class AutoComponentProcessor : BasicAnnotationProcessor() {
         private val messager: Messager
     ) : ProcessingStep {
         override fun process(elementsByAnnotation: SetMultimap<Class<out Annotation>, Element>): Set<Element> {
-            val injections = elementsByAnnotation
+            val injections = mutableSetOf<TypeElement>()
+            val ignore = mutableSetOf<TypeElement>()
+            elementsByAnnotation
                 .values()
                 .filterIsInstance(TypeElement::class.java)
-                .map {
-                    val classPackage = elements.getPackageOf(it)
-                    val className = it.simpleName
-                    messager.printMessage(Diagnostic.Kind.WARNING, "Generating [inject($classPackage.$className)]")
-                    it
+                .forEach {
+                    val annotation = it.getAnnotation(Injection::class.java)
+                    when {
+                        !annotation.ignore -> injections += it
+                        else -> ignore += it
+                    }
                 }
-                .toSet()
+            injections.removeAll(ignore)
             create(injections)
             // No more processing
             return setOf()
@@ -99,6 +102,11 @@ class AutoComponentProcessor : BasicAnnotationProcessor() {
         }
 
         private fun createInjectMethod(element: TypeElement): MethodSpec {
+            // Logout Injection
+            val classPackage = elements.getPackageOf(element)
+            val className = element.simpleName
+            messager.printMessage(Diagnostic.Kind.WARNING, "Generating [inject($classPackage.$className)]")
+
             val injectionParam = TypeName.get(element.asType())
             return MethodSpec.methodBuilder("inject")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)

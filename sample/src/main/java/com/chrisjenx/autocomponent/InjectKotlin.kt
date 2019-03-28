@@ -18,6 +18,11 @@ class SubClassInjectKotlin
 @Inject constructor() : InjectKotlin() {
 
     @Inject lateinit var dude2: String
+}
 
+@Injection(ignore = true)
+class SkipClassInjectKotlin
+@Inject constructor() : InjectKotlin() {
+    @Inject lateinit var dude2: String
 }
 

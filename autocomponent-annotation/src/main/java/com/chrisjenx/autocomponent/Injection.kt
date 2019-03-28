@@ -10,4 +10,4 @@ import kotlin.annotation.AnnotationTarget.CLASS
 @Inherited
 @Target(CLASS)
 @Retention(BINARY)
-annotation class Injection
+annotation class Injection(val ignore: Boolean = false)
