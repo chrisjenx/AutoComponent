@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.5.0-SNAPSHOT (2019/03/29)
+
+### AutoInjectHelper
+- Check if the rootComponent changes so we don't cache old components to re-fetch AutoComponent
+
 ## 0.4.0-SNAPSHOT (2019/03/28)
 - Add ignore to `@Injection(ignore = true)`. 
 

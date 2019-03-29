@@ -6,17 +6,24 @@ import java.lang.reflect.Method
 
 var logger: (msg: String) -> Unit = { println("AutoComponentHelper: $it") }
 
-private var autoComponent: Any? = null
+private var autoComponent: Pair<Any, Any>? = null
 private val injectMap: MutableMap<Class<*>, Method> = mutableMapOf()
 
 /**
  * Try and find the AutoComponent from the component passed in, we cache it once found to reduce multiple hits
  */
 internal fun findAutoComponent(rootComponent: Any): Any? {
-    return autoComponent ?: rootComponent::class.java.methods
+    // See if we have found anything. and check if it's the same root!
+    val foundAuto = autoComponent?.let { ra ->
+        // Let's see if we still have the same root component (first item)
+        if (ra.first == rootComponent) ra.second
+        else null
+    }
+    return foundAuto ?: rootComponent::class.java.methods
         .firstOrNull { it.returnType.simpleName == "AutoComponent" } // find method that returns AutoComponent
         ?.invoke(rootComponent) // get the AutoComponent
-        ?.also { autoComponent = it }
+        // Save the component if we found it
+        ?.also { autoComponent = rootComponent to it }
         .also { if (it == null) logger("Failed to find auto component") }
 }
 
@@ -43,7 +50,7 @@ internal fun <T> findInject(autoComponent: Any, injectClazz: Class<T>): Method? 
                     var findInterface: Method? = null
                     for (i in interfaces) {
                         findInterface = findInject(autoComponent, i)
-                        if(findInterface != null) break
+                        if (findInterface != null) break
                     }
                     findInterface
                 }
@@ -89,22 +96,11 @@ internal fun <T> findInject(autoComponent: Any, injectClazz: Class<T>): Method? 
  *
  * @param rootComponent this is the root component you defined the [AutoComponent] in.
  * @param inject this is the class you are injecting into
- * @param injectClazz this is the class definition for [inject]
+ * @receiver the class you want to inject into
  */
 //fun <T> inject(rootComponent: Any, inject: T, injectClazz: Class<out T>) {
 fun <T : Any> T.inject(rootComponent: Any) {
-    findAutoComponent(rootComponent)
-        ?.let { autoComponent -> findInject(autoComponent, this.javaClass) }
-        ?.let { injectMethod -> injectMethod.invoke(autoComponent, this) }
+    findAutoComponent(rootComponent)?.let { autoComponent ->
+        findInject(autoComponent, this.javaClass)?.invoke(autoComponent, this)
+    }
 }
-
-/**
- * Convenience method for [inject]
- *
- * @param rootComponent this is the root component you defined [AutoComponent] in.
- * @param T this is what we are going to try and inject into
- * @see inject
- */
-//inline fun <T : Any> T.inject(rootComponent: Any) {
-//    inject(rootComponent, this)
-//}
