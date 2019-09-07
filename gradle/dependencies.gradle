@@ -29,7 +29,7 @@ def kotlin = [
 def misc = [
         dagger         : "com.google.dagger:dagger:${versions.dagger}",
         daggerCompiler : "com.google.dagger:dagger-compiler:${versions.dagger}",
-        kotlinxMetadata: 'org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.0.5',
+        kotlinxMetadata: 'org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0',
         javapoet       : 'com.squareup:javapoet:1.11.1'
 ]
 
