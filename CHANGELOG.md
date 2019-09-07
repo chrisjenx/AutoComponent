@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.6.0-SNAPSHOT (2019/09/07)
+- Updated dependencies
+- Enabled incremental support
+
 ## 0.5.0-SNAPSHOT (2019/03/29)
 
 ### AutoInjectHelper

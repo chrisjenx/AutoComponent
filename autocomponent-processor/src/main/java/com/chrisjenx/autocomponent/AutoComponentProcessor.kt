@@ -3,7 +3,6 @@ package com.chrisjenx.autocomponent
 import com.google.auto.common.BasicAnnotationProcessor
 import com.google.auto.service.AutoService
 import com.google.common.collect.SetMultimap
-import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
@@ -18,7 +17,6 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
-import javax.lang.model.type.DeclaredType
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
