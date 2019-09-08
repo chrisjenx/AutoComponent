@@ -3,12 +3,15 @@ package com.chrisjenx.autocomponent
 import com.google.auto.common.BasicAnnotationProcessor
 import com.google.auto.service.AutoService
 import com.google.common.collect.SetMultimap
+import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import dagger.Subcomponent
+import net.ltgt.gradle.incap.IncrementalAnnotationProcessor
+import net.ltgt.gradle.incap.IncrementalAnnotationProcessorType
 import javax.annotation.processing.Filer
 import javax.annotation.processing.Messager
 import javax.annotation.processing.Processor
@@ -21,7 +24,12 @@ import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
+/**
+ * AutoComponent processor, will find anything annotated with [@Injection] and create a `AutoComponent` dagger
+ * component with an `void inject(inject T)` method for each class.
+ */
 @AutoService(Processor::class)
+@IncrementalAnnotationProcessor(IncrementalAnnotationProcessorType.AGGREGATING)
 class AutoComponentProcessor : BasicAnnotationProcessor() {
 
     private lateinit var filer: Filer
@@ -35,7 +43,8 @@ class AutoComponentProcessor : BasicAnnotationProcessor() {
         val elements = processingEnv.elementUtils
         types = processingEnv.typeUtils
         options = processingEnv.options
-        return listOf(AutoInjectorGenerator(filer, elements, messager))
+        val generatedAnnotation = createGeneratedAnnotation(elements)
+        return listOf(AutoInjectorGenerator(filer, elements, messager, generatedAnnotation))
     }
 
     override fun postRound(roundEnv: RoundEnvironment) {
@@ -48,7 +57,8 @@ class AutoComponentProcessor : BasicAnnotationProcessor() {
     class AutoInjectorGenerator(
         private val filer: Filer,
         private val elements: Elements,
-        private val messager: Messager
+        private val messager: Messager,
+        private val generatedAnnotation: AnnotationSpec?
     ) : ProcessingStep {
         override fun process(elementsByAnnotation: SetMultimap<Class<out Annotation>, Element>): Set<Element> {
             val injections = mutableSetOf<TypeElement>()
@@ -81,7 +91,13 @@ class AutoComponentProcessor : BasicAnnotationProcessor() {
             return TypeSpec.interfaceBuilder("AutoComponent")
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Subcomponent::class.java)
-                .addMethods(injections.map(::createInjectMethod))
+                .apply {
+                    generatedAnnotation?.also { addAnnotation(it) }
+                    injections.forEach { e ->
+                        addMethod(createInjectMethod(e))
+                        addOriginatingElement(e)
+                    }
+                }
 //                .addType(createBuilder())
                 .build()
         }

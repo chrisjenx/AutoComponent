@@ -7,7 +7,9 @@ def versions = [
 
 def apt = [
         autoService: "com.google.auto.service:auto-service:1.0-rc6",
-        autoCommon : 'com.google.auto:auto-common:0.10'
+        autoCommon : 'com.google.auto:auto-common:0.10',
+        inCap : 'net.ltgt.gradle.incap:incap:0.2',
+        inCapProcessor : 'net.ltgt.gradle.incap:incap-processor:0.2'
 ]
 
 def build = [

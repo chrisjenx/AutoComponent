@@ -34,8 +34,10 @@ artifacts {
 }
 
 dependencies {
-    kapt deps.apt.autoService
     compileOnly deps.apt.autoService
+    kapt deps.apt.autoService
+    compileOnly deps.apt.inCap
+    kapt deps.apt.inCapProcessor
 
     compile project(':autocomponent-annotation')
 

@@ -16,7 +16,6 @@ open class InjectKotlin {
 
 class SubClassInjectKotlin
 @Inject constructor() : InjectKotlin() {
-
     @Inject lateinit var dude2: String
 }
 
@@ -25,4 +24,16 @@ class SkipClassInjectKotlin
 @Inject constructor() : InjectKotlin() {
     @Inject lateinit var dude2: String
 }
+
+@Injection
+class NewClassToInject {
+    @Inject lateinit var dude2: String
+    @Inject lateinit var dude3: String
+}
+
+@Injection
+class NewClassToInject2 {
+    @Inject lateinit var dude2: String
+}
+
 

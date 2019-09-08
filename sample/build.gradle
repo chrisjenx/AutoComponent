@@ -38,9 +38,6 @@ dependencies {
 }
 
 kapt {
-    arguments {
-        arg("autocomponent.generated", "javax.annotation.Generated")
-    }
     correctErrorTypes = true
 }
 
