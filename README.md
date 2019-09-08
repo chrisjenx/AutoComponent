@@ -80,6 +80,14 @@ class MyClass {
 
 ```
 
+### Incremental Compilation
+
+There is a bug currently where during incremental compilation that AutComponent will regenerate the `AutoComponent`
+but it doesn't pass AutoComponent to Dagger for it to run against that.
+
+Basically if you get `AutoComponentImpl is not abstract and does not override abstract method ...` two things, make a
+change in the MainComponent you added AutoComponent too (this triggers Dagger to recompile), or clean build.
+
 
 ### Dependencies (NOT YET DEPLOYED)
 
@@ -90,13 +98,13 @@ In your build.gradle
 dependencies {
 
   // Optional - the helper classes, only need this if you want to use reflection.
-  compileOnly "com.chrisjenx.autocomponent:autocomponent-helpers:0.5.0-SNAPSHOT"
+  compileOnly "com.chrisjenx.autocomponent:autocomponent-helpers:0.6.0-SNAPSHOT"
 
   // Required - for kapt to work, can be compile, but we don't need them after kapt has run.
-  compileOnly "com.chrisjenx.autocomponent:autocomponent-annotation:0.5.0-SNAPSHOT"
+  compileOnly "com.chrisjenx.autocomponent:autocomponent-annotation:0.6.0-SNAPSHOT"
 
   // Required - generate the AutoComponent
-  kapt "com.chrisjenx.autocomponent:autocomponent-processor:0.5.0-SNAPSHOT"
+  kapt "com.chrisjenx.autocomponent:autocomponent-processor:0.6.0-SNAPSHOT"
 
 }
 
